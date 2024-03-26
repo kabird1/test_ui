@@ -35,6 +35,6 @@ if st.session_state.vendor_name!=None:
 if st.session_state.docs!=None:
     st.write('The following documents are related to this vendor:')
     for doc in st.session_state.docs:
-        st.write('- '+doc)
+        st.write('- '+doc.metadata['filename'])
 
     
