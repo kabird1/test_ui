@@ -34,8 +34,18 @@ if st.session_state.vendor_name!=None:
     st.session_state.docs = st.session_state.full_doc_vector_store.similarity_search_with_relevance_scores(query=st.session_state.vendor_name,k=2000, score_threshold=0.83)
     
 if st.session_state.docs!=None:
-    st.write('The following documents are related to this vendor:')
-    for doc in st.session_state.docs:
-        st.write('- '+doc[0].metadata['filename'])
+    with st.container():
+        st.write('The following documents are related to this vendor:')
+        with st.container():
+            for doc in st.session_state.docs:
+                st.checkbox(label=doc[0].metadata['filename'], value=True)
+        with st.container()
+            st.write('AI Analysis Options':):
+            st.checkbox(label='Contract validity', value=True,help='AI performs analysis to determine the validity dates of the documents')
+            st.checkbox(label='When to notify', value=True, help='AI performs analysis to determine the notification period for cybersecurity incident')
+            st.checkbox(label='Who to notify', value=True, help='AI performs analysis to determine who to contact if a cybersecurity incident occurs')
+            st.checkbox(label='Information to report', value=True, help='AI performs analysis to determine what information must be reported if a cybersecurity incident occurs')
+            st.checkbox(label='Data retention requirements', value=True, help='AI performs analysis to determine data retention requirements')
+            st.button(label='Perform AI analysis', help='AI will perform analysis on the contracts for the vendor for selected options', use_container_width=True)
 
     
