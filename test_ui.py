@@ -39,8 +39,8 @@ if st.session_state.docs!=None:
         with st.container():
             for doc in st.session_state.docs:
                 st.checkbox(label=doc[0].metadata['filename'], value=True)
-        with st.container()
-            st.write('AI Analysis Options':):
+        with st.container():
+            st.write('AI Analysis Options:'
             st.checkbox(label='Contract validity', value=True,help='AI performs analysis to determine the validity dates of the documents')
             st.checkbox(label='When to notify', value=True, help='AI performs analysis to determine the notification period for cybersecurity incident')
             st.checkbox(label='Who to notify', value=True, help='AI performs analysis to determine who to contact if a cybersecurity incident occurs')
