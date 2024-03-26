@@ -4,3 +4,6 @@ langchain-community==0.0.16
 langchain_core==0.1.16
 langchain_openai==0.0.4
 azure-search-documents
+azure-identity
+azure-core
+openai
