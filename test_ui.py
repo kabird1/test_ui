@@ -28,7 +28,7 @@ if 'chunk_vector_store' not in st.session_state:
         index_name=os.getenv('FULL_DOC_INDEX')
     )
 
-st.session_state.vendor_name=st.chat_input(label='Enter the name of a vendor:')
+st.session_state.vendor_name=st.chat_input(placeholder='Enter the name of a vendor:')
 if st.session_state.vendor_name!=None:
     st.session_state.docs = st.session_state.full_doc_vector_store.similarity_search(query=st.session_state.vendor_name,k=2000, score_threshold=0.83)
     
