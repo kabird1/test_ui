@@ -5,7 +5,7 @@ from langchain_community.vectorstores import AzureSearch
 if 'docs' not in st.session_state:
     st.session_state.docs=None
 if 'chunk_vector_store' not in st.session_state:
-        embedder = AzureOpenAIEmbeddings(deployment="text-embedding-ada-002", 
+    embedder = AzureOpenAIEmbeddings(deployment="text-embedding-ada-002", 
         chunk_size=1, 
         openai_api_key=os.getenv("OPENAI_API_KEY"), 
         openai_api_type=os.getenv("OPENAI_API_TYPE"), 
