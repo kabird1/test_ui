@@ -1,6 +1,7 @@
 import streamlit as st
 from langchain_openai.embeddings import AzureOpenAIEmbeddings
 from langchain_community.vectorstores import AzureSearch
+import os
 
 if 'docs' not in st.session_state:
     st.session_state.docs=None
