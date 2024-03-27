@@ -94,7 +94,8 @@ def retrieve_chunks(query):
             chunk[0].page_content='File: '+chunk[0].metadata['filename']+', '+chunk[0].page_content
             desired_chunks.append(chunk[0])
     return(desired_chunks)
-    
+
+st.header(body='Black & Veatch | Information Security Contract Database and AI Analysis')
 with st.container():
     st.session_state.vendor_name=st.chat_input(placeholder='Enter the name of a vendor:')
 
@@ -139,10 +140,11 @@ if st.session_state.docs!=None:
                         with st.spinner('Determining information that must be reported if cybersecurity incident has occured'):
                             question='Information to include when reporting the cybersecurity incident:'
                             analyze(question)
-            if st.session_state.analysis_results!=[]:
-                for result in st.session_state.analysis_results:
-                    st.subheader(result['question'])
-                    st.write(result['answer'])
+            with st.container():
+                if st.session_state.analysis_results!=[]:
+                    for result in st.session_state.analysis_results:
+                        st.subheader(result['question'])
+                        st.write(result['answer'])
             
                     
 
