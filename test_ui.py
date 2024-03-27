@@ -85,7 +85,7 @@ def retrieve_chunks(query):
     filter=[]
     for doc in st.session_state.docs:
         filter.append(doc[0].metadata['filename'])
-    chunks=chunk_vector_store.similarity_search_with_relevance_scores(query=query,k=2000,score_threshold=0.8)
+    chunks=st.session_state.chunk_vector_store.similarity_search_with_relevance_scores(query=query,k=2000,score_threshold=0.8)
     desired_chunks=[]
     for chunk in chunks:
         if chunk[0].metadata['filename'] in filter:
