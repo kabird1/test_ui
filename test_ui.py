@@ -49,17 +49,19 @@ if 'contract_analysis_agent' not in st.session_state:
     )
     doc_summ_template=(
         """
-        SYSTEM: You are in an intelligent assistant which analyzes portions of contracts that an engineering, procurement and construction company has with its vendors and clients.
+        SYSTEM: You are in an intelligent assistant which analyzes portions of contracts that Black & Veatch (an engineering, procurement and construction company has with its vendors and clients.
         The contracts are related to information security/cyber security.
         Extract the required information from the legal contracts, including paragraph or section numbers and filenames
         Think step by step.
         Be brief and straight to the point in answering the required information.
+        If there are no legal contracts provided, state: 'The selected documents do not contain the requested information.'
+        
     
         Provide your answer in bullet points:
         i.e
         - File X, Section x.x states:
         - File X, Section x.x states:
-        - Therefore:
+        - **Therefore:**
     
         Required Information: {question}
         Legal Contracts: {context}
