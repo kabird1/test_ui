@@ -95,7 +95,8 @@ def retrieve_chunks(query):
             desired_chunks.append(chunk[0])
     return(desired_chunks)
 
-st.header(body='Black & Veatch | Information Security Contract Database and AI Analysis')
+st.set_page_config(page_title='Black & Veatch | Information Security Contract Database and AI Analysis', layout='wide')
+st.header(body='Black & Veatch | Information Security Contract Database and AI Analysis', divider='gray')
 with st.container():
     st.session_state.vendor_name=st.chat_input(placeholder='Enter the name of a vendor:')
 
