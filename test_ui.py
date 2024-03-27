@@ -121,7 +121,7 @@ if st.session_state.docs!=None:
                         with st.spinner('Checking validity time of contract...'):
                             question='Timeframe when the contract is valid (start date to end date):'
                             chunks=retrieve_chunks(question)
-                            contract_validity_time = st.session_state.contract_analysis_agent.invoke(input={'question':question,'input_documents':chunks})
+                            contract_validity_time = st.session_state.contract_analysis_agent.invoke(input={'question':question,'input_documents':chunks})['output_text']
                             st.session_state.analysis_results.append({'question':question, 'answer':contract_validity_time})
             if st.session_state.analysis_results!=[]:
                 for result in st.session_state.analysis_results:
