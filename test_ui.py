@@ -82,6 +82,7 @@ if 'contract_analysis_agent' not in st.session_state:
     )
     
 def retrieve_chunks(query):
+    filter=[]
     for doc in st.session_state.docs:
         filter.append(doc[0].metadata['filename'])
     chunks=chunk_vector_store.similarity_search_with_relevance_scores(query=query,k=2000,score_threshold=0.8)
