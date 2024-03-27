@@ -112,13 +112,16 @@ if st.session_state.docs!=None:
             st.session_state.analyze_report_info=st.checkbox(label='Information to report', value=True, help='AI performs analysis to determine what information must be reported if a cybersecurity incident occurs')
             st.session_state.analyze_data_reqs=st.checkbox(label='Data retention requirements', value=True, help='AI performs analysis to determine data retention requirements')
             st.session_state.analyze=st.button(label='Perform AI analysis', help='AI will perform analysis on the contracts for the vendor for selected options', use_container_width=True)
+       with st.container():
         if st.session_state.analyze:
-            st.session_state.analysis_results=[]
-            if st.session_state.analyze_validity:
-                question='Timeframe when the contract is valid (start date to end date):'
-                chunks=st.session_state.retrieve_chunks(question)
-                contract_validity_time = st.session_state.contract_analysis_agent.invoke(input={'question':question,'input_documents':chunks})
-                st.session_state.analysis_results.append({'question':question, 'answer':contract_validity_time})
+            with st.spinner('Performing AI contract analysis...'):
+                st.session_state.analysis_results=[]
+                if st.session_state.analyze_validity:
+                    with st.spinner('Checking validity time of contract...')
+                        question='Timeframe when the contract is valid (start date to end date):'
+                        chunks=retrieve_chunks(question)
+                        contract_validity_time = st.session_state.contract_analysis_agent.invoke(input={'question':question,'input_documents':chunks})
+                        st.session_state.analysis_results.append({'question':question, 'answer':contract_validity_time})
         if st.session_state.analysis_results!=[]:
             for result in st.session_state.analysis_results:
                 st.subheader(result['question'])
