@@ -122,7 +122,7 @@ if st.session_state.docs!=None:
         if st.session_state.analysis_results!=[]:
             for result in st.session_state.analysis_results:
                 st.subheader(result['question'])
-                st.write(result['answer']
+                st.write(result['answer'])
             
                     
 
