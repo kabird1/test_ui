@@ -115,14 +115,28 @@ if st.session_state.docs!=None:
             st.session_state.analyze=st.button(label='Perform AI analysis', help='AI will perform analysis on the contracts for the vendor for selected options', use_container_width=True)
         with st.container():
             if st.session_state.analyze:
+                def analyze(question):
+                    chunks=retrieve_chunks(question)
+                    answer = st.session_state.contract_analysis_agent.invoke(input={'question':question,'input_documents':chunks})['output_text']
+                    st.session_state.analysis_results.append({'question':question, 'answer':answer})
                 with st.spinner('Performing AI contract analysis...'):
                     st.session_state.analysis_results=[]
                     if st.session_state.analyze_validity:
-                        with st.spinner('Checking validity time of contract...'):
+                        with st.spinner('Determining validity time of contract...'):
                             question='Timeframe when the contract is valid (start date to end date):'
-                            chunks=retrieve_chunks(question)
-                            contract_validity_time = st.session_state.contract_analysis_agent.invoke(input={'question':question,'input_documents':chunks})['output_text']
-                            st.session_state.analysis_results.append({'question':question, 'answer':contract_validity_time})
+                            analyze(question)
+                    if st.session_state.analyze_notif_time:
+                        with st.spinner('Determining notification period for cybersecurity incident...'):
+                            question='Time to notify in the event of a cybersecurity incident:'
+                            analyze(question)
+                    if st.session_state.analyze_notif_contact:
+                        with st.spinner('Determining contact information for reporting cybersecurity incident'):
+                            question='Who to notify in the event of a cybersecurity incident, contact information (name/email/phone number and/or address):'
+                            analyze(question)
+                    if st.session_state.analyze_report_info:
+                        with st.spinner('Determining information that must be reported if cybersecurity incident has occured'):
+                            question='Information to include when reporting the cybersecurity incident:'
+                            analyze(question)
             if st.session_state.analysis_results!=[]:
                 for result in st.session_state.analysis_results:
                     st.subheader(result['question'])
