@@ -140,16 +140,16 @@ if st.session_state.docs!=None:
                     threads=[]
                     if st.session_state.analyze_validity:
                         question='Timeframe when the contract is valid (start date to end date):'
-                        threads.append(threading.Thread(target=analyze, args=(question), group=None))
+                        threads.append(threading.Thread(target=analyze, args=(question,), group=None))
                     if st.session_state.analyze_notif_time:
                         question='Time to notify in the event of a cybersecurity incident:'
-                        threads.append(threading.Thread(target=analyze, args=(question), group=None))
+                        threads.append(threading.Thread(target=analyze, args=(question,), group=None))
                     if st.session_state.analyze_notif_contact:
                         question='Who to notify in the event of a cybersecurity incident, contact information (name/email/phone number and/or address):'
-                        threads.append(threading.Thread(target=analyze, args=(question), group=None))
+                        threads.append(threading.Thread(target=analyze, args=(question,), group=None))
                     if st.session_state.analyze_report_info:
                         question='Information to include when reporting the cybersecurity incident:'
-                        threads.append(threading.Thread(target=analyze, args=(question), group=None))
+                        threads.append(threading.Thread(target=analyze, args=(question,), group=None))
 
                     for thread in threads:
                         thread.start()
