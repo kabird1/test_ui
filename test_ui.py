@@ -131,7 +131,10 @@ if st.session_state.docs!=None:
             st.session_state.analyze=st.button(label='Perform AI analysis', help='AI will perform analysis on the contracts for the vendor for selected options', use_container_width=True)
         with st.container():
             if st.session_state.analyze:
-                def analyze(question):
+                def analyze(question, docs, chunk_vector_store, contract_analysis_agent):
+                    st.session_state.docs=docs
+                    st.session_state.chunk_vector_store=chunk_vector_store
+                    st.session_state.contract_analysis_agent=contract_analysis_agent
                     chunks=retrieve_chunks(question)
                     answer = st.session_state.contract_analysis_agent.invoke(input={'question':question,'input_documents':chunks})['output_text']
                     st.session_state.analysis_results.append({'question':question, 'answer':answer})
@@ -140,16 +143,16 @@ if st.session_state.docs!=None:
                     threads=[]
                     if st.session_state.analyze_validity:
                         question='Timeframe when the contract is valid (start date to end date):'
-                        threads.append(threading.Thread(target=analyze, args=(question,), group=None))
+                        threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
                     if st.session_state.analyze_notif_time:
                         question='Time to notify in the event of a cybersecurity incident:'
-                        threads.append(threading.Thread(target=analyze, args=(question,), group=None))
+                        threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
                     if st.session_state.analyze_notif_contact:
                         question='Who to notify in the event of a cybersecurity incident, contact information (name/email/phone number and/or address):'
-                        threads.append(threading.Thread(target=analyze, args=(question,), group=None))
+                        threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
                     if st.session_state.analyze_report_info:
                         question='Information to include when reporting the cybersecurity incident:'
-                        threads.append(threading.Thread(target=analyze, args=(question,), group=None))
+                        threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
 
                     for thread in threads:
                         thread.start()
