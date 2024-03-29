@@ -93,11 +93,11 @@ if 'contract_analysis_agent' not in st.session_state or st.session_state.update_
     )
     
     st.session_state.update_agent=False
-def retrieve_chunks(query):
+def retrieve_chunks(query, docs, chunk_vector_store):
     filter=[]
-    for doc in st.session_state.docs:
+    for doc in docs:
         filter.append(doc[0].metadata['filename'])
-    chunks=st.session_state.chunk_vector_store.similarity_search_with_relevance_scores(query=query,k=2000,score_threshold=0.8)
+    chunks=chunk_vector_store.similarity_search_with_relevance_scores(query=query,k=2000,score_threshold=0.8)
     desired_chunks=[]
     for chunk in chunks:
         if chunk[0].metadata['filename'] in filter:
@@ -132,11 +132,8 @@ if st.session_state.docs!=None:
         with st.container():
             if st.session_state.analyze:
                 def analyze(question, docs, chunk_vector_store, contract_analysis_agent):
-                    st.session_state.docs=docs
-                    st.session_state.chunk_vector_store=chunk_vector_store
-                    st.session_state.contract_analysis_agent=contract_analysis_agent
-                    chunks=retrieve_chunks(question)
-                    answer = st.session_state.contract_analysis_agent.invoke(input={'question':question,'input_documents':chunks})['output_text']
+                    chunks=retrieve_chunks(question, docs, chunk_vector_store)
+                    answer = contract_analysis_agent.invoke(input={'question':question,'input_documents':chunks})['output_text']
                     st.session_state.analysis_results.append({'question':question, 'answer':answer})
                 with st.spinner('Performing AI contract analysis...'):
                     st.session_state.analysis_results=[]
