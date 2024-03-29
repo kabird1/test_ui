@@ -132,9 +132,10 @@ if st.session_state.docs!=None:
         with st.container():
             if st.session_state.analyze:
                 def analyze(question, docs, chunk_vector_store, contract_analysis_agent):
+                    global analysis_results=[]
                     chunks=retrieve_chunks(question, docs, chunk_vector_store)
                     answer = contract_analysis_agent.invoke(input={'question':question,'input_documents':chunks})['output_text']
-                    st.session_state.analysis_results.append({'question':question, 'answer':answer})
+                    analysis_results.append({'question':question, 'answer':answer})
                 with st.spinner('Performing AI contract analysis...'):
                     st.session_state.analysis_results=[]
                     threads=[]
@@ -155,6 +156,7 @@ if st.session_state.docs!=None:
                         thread.start()
                         thread.join()
             with st.container():
+                st.session_state.analysis_results=analysis_results
                 if st.session_state.analysis_results!=[]:
                     for result in st.session_state.analysis_results:
                         st.subheader(result['question'])
