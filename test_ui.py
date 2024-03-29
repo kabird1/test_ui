@@ -14,6 +14,13 @@ if 'analyze' not in st.session_state:
     st.session_state.analyze=False
 if 'analysis_results' not in st.session_state:
     st.session_state.analysis_results=[]
+if 'update_agent' not in st.session_state:
+    st.session_state.update_agent=True
+
+def update_flag_callback():
+    st.session_state.update_agent=True
+    
+st.session_state.gpt_version=st.sidebar.selectbox(label='GPT Version', options=['gpt-35-turbo','gpt-4'], index=0, help='GPT LLM version used to perform contract analysis', placeholder='gpt-35-turbo', on_change=update_agent)
     
 if 'chunk_vector_store' not in st.session_state:
     embedder = AzureOpenAIEmbeddings(deployment="text-embedding-ada-002", 
@@ -38,12 +45,12 @@ if 'chunk_vector_store' not in st.session_state:
         index_name=os.getenv('FULL_DOC_INDEX')
     )
 
-if 'contract_analysis_agent' not in st.session_state:
+if 'contract_analysis_agent' not in st.session_state or st.session_state.update_agent==True:
     llm=AzureChatOpenAI(
         api_key=os.getenv("OPENAI_API_KEY"), 
         api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-        azure_deployment='gpt-4',
+        azure_deployment=st.session_state.gpt_version,
         streaming=True,
         temperature=0.4
     )
@@ -83,6 +90,7 @@ if 'contract_analysis_agent' not in st.session_state:
         verbose=True
     )
     
+    st.session_state.update_agent=False
 def retrieve_chunks(query):
     filter=[]
     for doc in st.session_state.docs:
@@ -94,6 +102,8 @@ def retrieve_chunks(query):
             chunk[0].page_content='File: '+chunk[0].metadata['filename']+', '+chunk[0].page_content
             desired_chunks.append(chunk[0])
     return(desired_chunks)
+
+
 
 st.set_page_config(page_title='Black & Veatch | Information Security Contract Database and AI Analysis', layout='wide')
 st.header(body='Black & Veatch | Information Security Contract Database and AI Analysis', divider='gray')
