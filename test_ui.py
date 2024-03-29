@@ -17,7 +17,7 @@ if 'analysis_results' not in st.session_state:
 if 'update_agent' not in st.session_state:
     st.session_state.update_agent=True
 
-def update_flag_callback():
+def update_agent():
     st.session_state.update_agent=True
     
 st.session_state.gpt_version=st.sidebar.selectbox(label='GPT Version', options=['gpt-35-turbo','gpt-4'], index=0, help='GPT LLM version used to perform contract analysis', placeholder='gpt-35-turbo', on_change=update_agent)
