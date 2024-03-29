@@ -19,7 +19,8 @@ if 'update_agent' not in st.session_state:
 
 def update_agent():
     st.session_state.update_agent=True
-    
+
+st.set_page_config(page_title='Black & Veatch | Information Security Contract Database and AI Analysis', layout='wide')    
 st.session_state.gpt_version=st.sidebar.selectbox(label='GPT Version', options=['gpt-35-turbo','gpt-4'], index=0, help='GPT LLM version used to perform contract analysis', placeholder='gpt-35-turbo', on_change=update_agent)
     
 if 'chunk_vector_store' not in st.session_state:
@@ -105,7 +106,7 @@ def retrieve_chunks(query):
 
 
 
-st.set_page_config(page_title='Black & Veatch | Information Security Contract Database and AI Analysis', layout='wide')
+
 st.header(body='Black & Veatch | Information Security Contract Database and AI Analysis', divider='gray')
 with st.container():
     st.session_state.vendor_name=st.chat_input(placeholder='Enter the name of a vendor:')
