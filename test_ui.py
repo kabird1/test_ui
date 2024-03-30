@@ -121,10 +121,10 @@ if vendor_name!=None:
 if st.session_state.docs!=None:
     with st.container(border=True):
         st.subheader('Search results for \"'+st.session_state.vendor_name+'\"')
+        checkboxes=[]
         for doc in st.session_state.docs:
             doc_url=os.getenv('SHAREPOINT_FOLDER_URL')+quote(doc[0].metadata['filename'])
-            if st.checkbox(label='['+doc[0].metadata['filename']+']('+doc_url+')', value=True):
-                st.session_state.selected_docs.append(doc[0].metadata['filename'])
+            checkboxes.append([st.checkbox(label='['+doc[0].metadata['filename']+']('+doc_url+')', value=True),doc])
     with st.container(border=True):
         st.subheader('AI Analysis Options:')
         st.session_state.analyze_validity=st.checkbox(label='Contract validity', value=True,help='AI performs analysis to determine the validity dates of the documents')
@@ -145,6 +145,9 @@ if st.session_state.docs!=None:
                 start=time.time()
                 st.session_state.analysis_results=[]
                 threads=[]
+                for checkbox in checkboxes:
+                    if checkbox[0]:
+                        st.session_state.selected_docs.append(checkbox[1])
                 if st.session_state.analyze_validity:
                     question='Timeframe when the contract is valid (start date to end date):'
                     threads.append(threading.Thread(target=analyze, args=(question, st.session_state.selected_docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
