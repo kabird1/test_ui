@@ -8,6 +8,7 @@ from langchain.chains import StuffDocumentsChain
 from langchain_openai.chat_models import AzureChatOpenAI
 from langchain.chains import RetrievalQA
 import threading
+import time
 
 if 'docs' not in st.session_state:
     st.session_state.docs=None
@@ -15,6 +16,8 @@ if 'analyze' not in st.session_state:
     st.session_state.analyze=False
 if 'analysis_results' not in st.session_state:
     st.session_state.analysis_results=[]
+if 'analysis_time' not in st.session_state:
+    st.session_state.analysis_time=None
 
 st.set_page_config(page_title='Black & Veatch | Information Security Contract Database and AI Analysis', layout='wide')    
     
@@ -112,7 +115,7 @@ if st.session_state.vendor_name!=None:
     
 if st.session_state.docs!=None:
     with st.container(border=True):
-        st.subheader('Search results for \**"'+st.session_state.vendor_name+'\"**')
+        st.subheader('Search results for \"'+st.session_state.vendor_name+'\"')
         with st.container():
             for doc in st.session_state.docs:
                 st.checkbox(label=doc[0].metadata['filename'], value=True)
@@ -124,45 +127,50 @@ if st.session_state.docs!=None:
             st.session_state.analyze_report_info=st.checkbox(label='Information to report', value=True, help='AI performs analysis to determine what information must be reported if a cybersecurity incident occurs')
             st.session_state.analyze_data_reqs=st.checkbox(label='Data retention requirements', value=True, help='AI performs analysis to determine data retention requirements')
             st.session_state.analyze=st.button(label='Perform AI analysis', help='AI will perform analysis on the contracts for the vendor for selected options', use_container_width=True)
-        with st.container(border=True):
-            if st.session_state.analyze:
-                analysis_results=[]
-                def analyze(question, docs, chunk_vector_store, contract_analysis_agent):
-                    global analysis_results
-                    chunks=retrieve_chunks(question, docs, chunk_vector_store)
-                    answer = contract_analysis_agent.invoke(input={'question':question,'input_documents':chunks})['output_text']
-                    analysis_results.append({'question':question, 'answer':answer})
-                with st.spinner('Performing AI contract analysis...'):
-                    st.session_state.analysis_results=[]
-                    threads=[]
-                    if st.session_state.analyze_validity:
-                        question='Timeframe when the contract is valid (start date to end date):'
-                        threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
-                    if st.session_state.analyze_notif_time:
-                        question='Time to notify in the event of a cybersecurity incident:'
-                        threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
-                    if st.session_state.analyze_notif_contact:
-                        question='Who to notify in the event of a cybersecurity incident, contact information (name/email/phone number and/or address):'
-                        threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
-                    if st.session_state.analyze_report_info:
-                        question='Information to include when reporting the cybersecurity incident:'
-                        threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
-                    if st.session_state.analyze_data_reqs:
-                        question='Data retention requirements:'
-                        threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
+    with st.container(border=True):
+        if st.session_state.analyze:
+            analysis_results=[]
+            def analyze(question, docs, chunk_vector_store, contract_analysis_agent):
+                global analysis_results
+                chunks=retrieve_chunks(question, docs, chunk_vector_store)
+                answer = contract_analysis_agent.invoke(input={'question':question,'input_documents':chunks})['output_text']
+                analysis_results.append({'question':question, 'answer':answer})
+            with st.spinner('Performing AI contract analysis...'):
+                start=time.time()
+                st.session_state.analysis_results=[]
+                threads=[]
+                if st.session_state.analyze_validity:
+                    question='Timeframe when the contract is valid (start date to end date):'
+                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
+                if st.session_state.analyze_notif_time:
+                    question='Time to notify in the event of a cybersecurity incident:'
+                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
+                if st.session_state.analyze_notif_contact:
+                    question='Who to notify in the event of a cybersecurity incident, contact information (name/email/phone number and/or address):'
+                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
+                if st.session_state.analyze_report_info:
+                    question='Information to include when reporting the cybersecurity incident:'
+                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
+                if st.session_state.analyze_data_reqs:
+                    question='Data retention requirements:'
+                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
 
-                    for thread in threads:
-                        thread.start()
-                    for thread in threads:
-                        thread.join()
-                    st.session_state.analysis_results=analysis_results
-            with st.container():
-                if st.session_state.analysis_results!=[]:
-                    st.subheader('Analysis Results *(Note: User is responsible for verifying all information)*')
-                    for result in st.session_state.analysis_results:
-                        st.subheader(result['question'])
-                        st.write(result['answer'])
-            
+                for thread in threads:
+                    thread.start()
+                for thread in threads:
+                    thread.join()
+                st.session_state.analysis_results=analysis_results
+                end=time.time()
+                st.session_state.analysis_time=end-start
+        with st.container():
+            if st.session_state.analysis_results!=[]:
+                st.subheader('Analysis Results:')
+                st.write('**Total analysis time: **'+st.session_state.analysis_time+' s')
+                st.write('*(Note: User is responsible for verifying all information)*')
+                for result in st.session_state.analysis_results:
+                    st.subheader(result['question'])
+                    st.write(result['answer'])
+        
                     
 
     
