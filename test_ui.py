@@ -105,26 +105,26 @@ def retrieve_chunks(query, docs, chunk_vector_store):
 
 st.header(body='Black & Veatch | Information Security Contract Database and AI Analysis', divider='gray')
 with st.container():
-    st.session_state.vendor_name=st.chat_input(placeholder='Enter the name of a vendor:')
+    st.session_state.vendor_name=st.chat_input(placeholder='Enter the name of a vendor')
 
 if st.session_state.vendor_name!=None:
     st.session_state.docs = st.session_state.full_doc_vector_store.similarity_search_with_relevance_scores(query=st.session_state.vendor_name,k=2000, score_threshold=0.83)
     
 if st.session_state.docs!=None:
-    with st.container():
-        st.write('The following documents are related to this vendor:')
+    with st.container(border=True):
+        st.subheader('Search results for \**"'+st.session+state.vendor_name+'\"**')
         with st.container():
             for doc in st.session_state.docs:
                 st.checkbox(label=doc[0].metadata['filename'], value=True)
-        with st.container():
-            st.write('AI Analysis Options:')
+        with st.container(border=True):
+            st.subheader('AI Analysis Options:')
             st.session_state.analyze_validity=st.checkbox(label='Contract validity', value=True,help='AI performs analysis to determine the validity dates of the documents')
             st.session_state.analyze_notif_time=st.checkbox(label='When to notify', value=True, help='AI performs analysis to determine the notification period for cybersecurity incident')
             st.session_state.analyze_notif_contact=st.checkbox(label='Who to notify', value=True, help='AI performs analysis to determine who to contact if a cybersecurity incident occurs')
             st.session_state.analyze_report_info=st.checkbox(label='Information to report', value=True, help='AI performs analysis to determine what information must be reported if a cybersecurity incident occurs')
             st.session_state.analyze_data_reqs=st.checkbox(label='Data retention requirements', value=True, help='AI performs analysis to determine data retention requirements')
             st.session_state.analyze=st.button(label='Perform AI analysis', help='AI will perform analysis on the contracts for the vendor for selected options', use_container_width=True)
-        with st.container():
+        with st.container(border=True):
             if st.session_state.analyze:
                 analysis_results=[]
                 def analyze(question, docs, chunk_vector_store, contract_analysis_agent):
@@ -147,6 +147,9 @@ if st.session_state.docs!=None:
                     if st.session_state.analyze_report_info:
                         question='Information to include when reporting the cybersecurity incident:'
                         threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
+                    if st.session_state.analyze_data_reqs:
+                        question='Data retention requirements:'
+                        threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
 
                     for thread in threads:
                         thread.start()
@@ -155,6 +158,7 @@ if st.session_state.docs!=None:
                     st.session_state.analysis_results=analysis_results
             with st.container():
                 if st.session_state.analysis_results!=[]:
+                    st.subheader('Analysis Results *(Note: User is responsible for verifying all information)*')
                     for result in st.session_state.analysis_results:
                         st.subheader(result['question'])
                         st.write(result['answer'])
