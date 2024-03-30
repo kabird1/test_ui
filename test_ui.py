@@ -19,7 +19,7 @@ if 'analysis_results' not in st.session_state:
 if 'analysis_time' not in st.session_state:
     st.session_state.analysis_time=None
 
-st.set_page_config(page_title='Black & Veatch | Information Security Contract Database and AI Analysis', layout='wide')    
+st.set_page_config(page_title='Black & Veatch | Information Security Contract Database and AI Analysis', layout='wide', page_icon='https://cdn.bfldr.com/E1EVDN8O/at/p3stnx8wsmbhx5p37f4sj89/23_BV_icon.eps?auto=webp&format=png')    
     
 if 'chunk_vector_store' not in st.session_state:
     embedder = AzureOpenAIEmbeddings(deployment="text-embedding-ada-002", 
@@ -126,7 +126,7 @@ if st.session_state.docs!=None:
         st.session_state.analyze_notif_contact=st.checkbox(label='Who to notify', value=True, help='AI performs analysis to determine who to contact if a cybersecurity incident occurs')
         st.session_state.analyze_report_info=st.checkbox(label='Information to report', value=True, help='AI performs analysis to determine what information must be reported if a cybersecurity incident occurs')
         st.session_state.analyze_data_reqs=st.checkbox(label='Data retention requirements', value=True, help='AI performs analysis to determine data retention requirements')
-        st.session_state.analyze=st.button(label='Perform AI analysis', help='AI will perform analysis on the contracts for the vendor for selected options', use_container_width=True, type='Primary')
+        st.session_state.analyze=st.button(label='Perform AI analysis', help='AI will perform analysis on the contracts for the vendor for selected options', use_container_width=True, type='primary')
     with st.container(border=True):
         if st.session_state.analyze:
             analysis_results=[]
