@@ -112,7 +112,7 @@ if st.session_state.vendor_name!=None:
     
 if st.session_state.docs!=None:
     with st.container(border=True):
-        st.subheader('Search results for \**"'+st.session+state.vendor_name+'\"**')
+        st.subheader('Search results for \**"'+st.session_state.vendor_name+'\"**')
         with st.container():
             for doc in st.session_state.docs:
                 st.checkbox(label=doc[0].metadata['filename'], value=True)
