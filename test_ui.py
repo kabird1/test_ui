@@ -9,6 +9,7 @@ from langchain_openai.chat_models import AzureChatOpenAI
 from langchain.chains import RetrievalQA
 import threading
 import time
+from urllib.parse import quote
 
 if 'docs' not in st.session_state:
     st.session_state.docs=None
@@ -118,7 +119,8 @@ if st.session_state.docs!=None:
     with st.container(border=True):
         st.subheader('Search results for \"'+st.session_state.vendor_name+'\"')
         for doc in st.session_state.docs:
-            st.checkbox(label=doc[0].metadata['filename'], value=True)
+            doc_url=os.getenv(SHAREPOINT_FOLDER_URL)+quote(doc[0].metadata['filename'])
+            st.checkbox(label='['+doc[0].metadata['filename']+']('+doc_url+')', value=True)
     with st.container(border=True):
         st.subheader('AI Analysis Options:')
         st.session_state.analyze_validity=st.checkbox(label='Contract validity', value=True,help='AI performs analysis to determine the validity dates of the documents')
