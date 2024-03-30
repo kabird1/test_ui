@@ -19,6 +19,8 @@ if 'analysis_results' not in st.session_state:
     st.session_state.analysis_results=[]
 if 'analysis_time' not in st.session_state:
     st.session_state.analysis_time=None
+if 'selected_docs' not in st.session_state:
+    st.session_state.selected_docs=[]
 
 st.set_page_config(page_title='Black & Veatch | Information Security Contract Database and AI Analysis', layout='wide', page_icon='https://cdn.bfldr.com/E1EVDN8O/at/p3stnx8wsmbhx5p37f4sj89/23_BV_icon.eps?auto=webp&format=png')    
     
@@ -114,13 +116,15 @@ with st.container():
 if vendor_name!=None:
     st.session_state.vendor_name=vendor_name
     st.session_state.docs = st.session_state.full_doc_vector_store.similarity_search_with_relevance_scores(query=st.session_state.vendor_name,k=2000, score_threshold=0.83)
+    st.session_state.selected_docs=[]
     
 if st.session_state.docs!=None:
     with st.container(border=True):
         st.subheader('Search results for \"'+st.session_state.vendor_name+'\"')
         for doc in st.session_state.docs:
             doc_url=os.getenv('SHAREPOINT_FOLDER_URL')+quote(doc[0].metadata['filename'])
-            st.checkbox(label='['+doc[0].metadata['filename']+']('+doc_url+')', value=True)
+            if st.checkbox(label='['+doc[0].metadata['filename']+']('+doc_url+')', value=True):
+                st.selected_docs.append(doc[0].metadata['filename'])
     with st.container(border=True):
         st.subheader('AI Analysis Options:')
         st.session_state.analyze_validity=st.checkbox(label='Contract validity', value=True,help='AI performs analysis to determine the validity dates of the documents')
@@ -143,19 +147,19 @@ if st.session_state.docs!=None:
                 threads=[]
                 if st.session_state.analyze_validity:
                     question='Timeframe when the contract is valid (start date to end date):'
-                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
+                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.selected_docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
                 if st.session_state.analyze_notif_time:
                     question='Time to notify in the event of a cybersecurity incident:'
-                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
+                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.selected_docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
                 if st.session_state.analyze_notif_contact:
                     question='Who to notify in the event of a cybersecurity incident, contact information (name/email/phone number and/or address):'
-                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
+                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.selected_docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
                 if st.session_state.analyze_report_info:
                     question='Information to include when reporting the cybersecurity incident:'
-                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
+                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.selected_docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
                 if st.session_state.analyze_data_reqs:
                     question='Data retention requirements:'
-                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
+                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.selected_docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
 
                 for thread in threads:
                     thread.start()
