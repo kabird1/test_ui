@@ -156,7 +156,7 @@ if st.session_state.docs!=None:
                     for thread in threads:
                         thread.start()
                     for thread in threads:
-                        thread.join
+                        thread.join()
                     st.session_state.analysis_results=analysis_results
             with st.container():
                 if st.session_state.analysis_results!=[]:
