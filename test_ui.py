@@ -156,9 +156,9 @@ if st.session_state.docs!=None:
                     for thread in threads:
                         thread.start()
                     for thread in threads:
-                        thread.join()
+                        thread.join
+                    st.session_state.analysis_results=analysis_results
             with st.container():
-                st.session_state.analysis_results=analysis_results
                 if st.session_state.analysis_results!=[]:
                     for result in st.session_state.analysis_results:
                         st.subheader(result['question'])
