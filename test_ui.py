@@ -116,17 +116,16 @@ if st.session_state.vendor_name!=None:
 if st.session_state.docs!=None:
     with st.container(border=True):
         st.subheader('Search results for \"'+st.session_state.vendor_name+'\"')
-        with st.container():
-            for doc in st.session_state.docs:
-                st.checkbox(label=doc[0].metadata['filename'], value=True)
-        with st.container(border=True):
-            st.subheader('AI Analysis Options:')
-            st.session_state.analyze_validity=st.checkbox(label='Contract validity', value=True,help='AI performs analysis to determine the validity dates of the documents')
-            st.session_state.analyze_notif_time=st.checkbox(label='When to notify', value=True, help='AI performs analysis to determine the notification period for cybersecurity incident')
-            st.session_state.analyze_notif_contact=st.checkbox(label='Who to notify', value=True, help='AI performs analysis to determine who to contact if a cybersecurity incident occurs')
-            st.session_state.analyze_report_info=st.checkbox(label='Information to report', value=True, help='AI performs analysis to determine what information must be reported if a cybersecurity incident occurs')
-            st.session_state.analyze_data_reqs=st.checkbox(label='Data retention requirements', value=True, help='AI performs analysis to determine data retention requirements')
-            st.session_state.analyze=st.button(label='Perform AI analysis', help='AI will perform analysis on the contracts for the vendor for selected options', use_container_width=True)
+        for doc in st.session_state.docs:
+            st.checkbox(label=doc[0].metadata['filename'], value=True)
+    with st.container(border=True):
+        st.subheader('AI Analysis Options:')
+        st.session_state.analyze_validity=st.checkbox(label='Contract validity', value=True,help='AI performs analysis to determine the validity dates of the documents')
+        st.session_state.analyze_notif_time=st.checkbox(label='When to notify', value=True, help='AI performs analysis to determine the notification period for cybersecurity incident')
+        st.session_state.analyze_notif_contact=st.checkbox(label='Who to notify', value=True, help='AI performs analysis to determine who to contact if a cybersecurity incident occurs')
+        st.session_state.analyze_report_info=st.checkbox(label='Information to report', value=True, help='AI performs analysis to determine what information must be reported if a cybersecurity incident occurs')
+        st.session_state.analyze_data_reqs=st.checkbox(label='Data retention requirements', value=True, help='AI performs analysis to determine data retention requirements')
+        st.session_state.analyze=st.button(label='Perform AI analysis', help='AI will perform analysis on the contracts for the vendor for selected options', use_container_width=True)
     with st.container(border=True):
         if st.session_state.analyze:
             analysis_results=[]
