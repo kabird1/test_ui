@@ -161,11 +161,11 @@ if st.session_state.docs!=None:
                     thread.join()
                 st.session_state.analysis_results=analysis_results
                 end=time.time()
-                st.session_state.analysis_time=end-start
+                st.session_state.analysis_time=round(end-start,2)
         with st.container():
             if st.session_state.analysis_results!=[]:
                 st.subheader('Analysis Results:')
-                st.write('**Total analysis time: **'+st.session_state.analysis_time+' s')
+                st.write('**Total analysis time: **'+str(st.session_state.analysis_time)+' s')
                 st.write('*(Note: User is responsible for verifying all information)*')
                 for result in st.session_state.analysis_results:
                     st.subheader(result['question'])
