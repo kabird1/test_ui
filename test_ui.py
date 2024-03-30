@@ -130,8 +130,8 @@ if st.session_state.docs!=None:
             st.session_state.analyze_data_reqs=st.checkbox(label='Data retention requirements', value=True, help='AI performs analysis to determine data retention requirements')
             st.session_state.analyze=st.button(label='Perform AI analysis', help='AI will perform analysis on the contracts for the vendor for selected options', use_container_width=True)
         with st.container():
-            analysis_results=[]
             if st.session_state.analyze:
+                analysis_results=[]
                 def analyze(question, docs, chunk_vector_store, contract_analysis_agent):
                     global analysis_results
                     chunks=retrieve_chunks(question, docs, chunk_vector_store)
@@ -155,6 +155,7 @@ if st.session_state.docs!=None:
 
                     for thread in threads:
                         thread.start()
+                    for thread in threads:
                         thread.join()
             with st.container():
                 st.session_state.analysis_results=analysis_results
