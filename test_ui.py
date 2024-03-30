@@ -165,7 +165,7 @@ if st.session_state.docs!=None:
         with st.container():
             if st.session_state.analysis_results!=[]:
                 st.subheader('Analysis Results:')
-                st.write('**Total analysis time: **'+str(st.session_state.analysis_time)+' s')
+                st.write('**Analysis completed in** '+str(st.session_state.analysis_time)+' s')
                 st.write('*(Note: User is responsible for verifying all information)*')
                 for result in st.session_state.analysis_results:
                     st.subheader(result['question'])
