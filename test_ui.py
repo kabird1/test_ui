@@ -41,7 +41,7 @@ if 'chunk_vector_store' not in st.session_state:
         index_name=os.getenv('FULL_DOC_INDEX')
     )
 
-if 'contract_analysis_agent' not in st.session_state
+if 'contract_analysis_agent' not in st.session_state:
     llm=AzureChatOpenAI(
         api_key=os.getenv("OPENAI_API_KEY"), 
         api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
