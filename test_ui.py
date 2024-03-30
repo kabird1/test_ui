@@ -21,6 +21,8 @@ if 'analysis_time' not in st.session_state:
     st.session_state.analysis_time=None
 if 'selected_docs' not in st.session_state:
     st.session_state.selected_docs=[]
+if 'checkboxes' not in st.session_state:
+    st.session_state.checkboxes=[]
 
 st.set_page_config(page_title='Black & Veatch | Information Security Contract Database and AI Analysis', layout='wide', page_icon='https://cdn.bfldr.com/E1EVDN8O/at/p3stnx8wsmbhx5p37f4sj89/23_BV_icon.eps?auto=webp&format=png')    
     
@@ -117,14 +119,15 @@ if vendor_name!=None:
     st.session_state.vendor_name=vendor_name
     st.session_state.docs = st.session_state.full_doc_vector_store.similarity_search_with_relevance_scores(query=st.session_state.vendor_name,k=2000, score_threshold=0.83)
     st.session_state.selected_docs=[]
+    st.session_state.checkboxes=[]
     
 if st.session_state.docs!=None:
     with st.container(border=True):
         st.subheader('Search results for \"'+st.session_state.vendor_name+'\"')
-        checkboxes=[]
-        for doc in st.session_state.docs:
-            doc_url=os.getenv('SHAREPOINT_FOLDER_URL')+quote(doc[0].metadata['filename'])
-            checkboxes.append([st.checkbox(label='['+doc[0].metadata['filename']+']('+doc_url+')', value=True),doc])
+        if st.session_state.checkboxes!=[]:
+            for doc in st.session_state.docs:
+                doc_url=os.getenv('SHAREPOINT_FOLDER_URL')+quote(doc[0].metadata['filename'])
+                st.session_state.checkboxes.append([st.checkbox(label='['+doc[0].metadata['filename']+']('+doc_url+')', value=True),doc])
     with st.container(border=True):
         st.subheader('AI Analysis Options:')
         st.session_state.analyze_validity=st.checkbox(label='Contract validity', value=True,help='AI performs analysis to determine the validity dates of the documents')
@@ -145,7 +148,7 @@ if st.session_state.docs!=None:
                 start=time.time()
                 st.session_state.analysis_results=[]
                 threads=[]
-                for checkbox in checkboxes:
+                for checkbox in st.session_state.checkboxes:
                     if checkbox[0]:
                         st.session_state.selected_docs.append(checkbox[1])
                 if st.session_state.analyze_validity:
