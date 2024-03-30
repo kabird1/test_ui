@@ -15,14 +15,8 @@ if 'analyze' not in st.session_state:
     st.session_state.analyze=False
 if 'analysis_results' not in st.session_state:
     st.session_state.analysis_results=[]
-if 'update_agent' not in st.session_state:
-    st.session_state.update_agent=True
-
-def update_agent():
-    st.session_state.update_agent=True
 
 st.set_page_config(page_title='Black & Veatch | Information Security Contract Database and AI Analysis', layout='wide')    
-st.session_state.gpt_version=st.sidebar.selectbox(label='GPT Version', options=['gpt-35-turbo-16k','gpt-4'], index=0, help='GPT LLM version used to perform contract analysis', placeholder='gpt-35-turbo', on_change=update_agent)
     
 if 'chunk_vector_store' not in st.session_state:
     embedder = AzureOpenAIEmbeddings(deployment="text-embedding-ada-002", 
@@ -47,12 +41,12 @@ if 'chunk_vector_store' not in st.session_state:
         index_name=os.getenv('FULL_DOC_INDEX')
     )
 
-if 'contract_analysis_agent' not in st.session_state or st.session_state.update_agent==True:
+if 'contract_analysis_agent' not in st.session_state
     llm=AzureChatOpenAI(
         api_key=os.getenv("OPENAI_API_KEY"), 
         api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-        azure_deployment=st.session_state.gpt_version,
+        azure_deployment='gpt-4',
         streaming=True,
         temperature=0.4
     )
@@ -67,9 +61,10 @@ if 'contract_analysis_agent' not in st.session_state or st.session_state.update_
         
     
         Provide your answer in bullet points:
+        Only include the sections that you have referenced to come up with the therefore statement.
         i.e
-        - File X, Section x.x states:
-        - File X, Section x.x states:
+        - **File X, Section x.x states:**
+        - **File X, Section x.x states:**
         - **Therefore:**
     
         Required Information: {question}
