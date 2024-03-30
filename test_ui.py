@@ -46,7 +46,7 @@ if 'contract_analysis_agent' not in st.session_state:
         api_key=os.getenv("OPENAI_API_KEY"), 
         api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-        azure_deployment='gpt-4',
+        azure_deployment='gpt-4-32k',
         streaming=True,
         temperature=0.4
     )
