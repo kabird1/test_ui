@@ -108,9 +108,10 @@ def retrieve_chunks(query, docs, chunk_vector_store):
 
 st.header(body='Black & Veatch | Information Security Contract Database and AI Analysis', divider='gray')
 with st.container():
-    st.session_state.vendor_name=st.chat_input(placeholder='Enter the name of a vendor')
+    vendor_name=st.chat_input(placeholder='Enter the name of a vendor')
 
-if st.session_state.vendor_name!=None:
+if vendor_name!=None:
+    st.session_state.vendor_name=vendor_name
     st.session_state.docs = st.session_state.full_doc_vector_store.similarity_search_with_relevance_scores(query=st.session_state.vendor_name,k=2000, score_threshold=0.83)
     
 if st.session_state.docs!=None:
@@ -125,7 +126,7 @@ if st.session_state.docs!=None:
         st.session_state.analyze_notif_contact=st.checkbox(label='Who to notify', value=True, help='AI performs analysis to determine who to contact if a cybersecurity incident occurs')
         st.session_state.analyze_report_info=st.checkbox(label='Information to report', value=True, help='AI performs analysis to determine what information must be reported if a cybersecurity incident occurs')
         st.session_state.analyze_data_reqs=st.checkbox(label='Data retention requirements', value=True, help='AI performs analysis to determine data retention requirements')
-        st.session_state.analyze=st.button(label='Perform AI analysis', help='AI will perform analysis on the contracts for the vendor for selected options', use_container_width=True)
+        st.session_state.analyze=st.button(label='Perform AI analysis', help='AI will perform analysis on the contracts for the vendor for selected options', use_container_width=True, type='Primary')
     with st.container(border=True):
         if st.session_state.analyze:
             analysis_results=[]
