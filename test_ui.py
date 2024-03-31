@@ -124,7 +124,7 @@ if vendor_name!=None:
 if st.session_state.docs!=None:
     with st.container(border=True):
         st.subheader('Search results for \"'+st.session_state.vendor_name+'\"')
-        if st.session_state.checkboxes!=[]:
+        if st.session_state.checkboxes==[]:
             for doc in st.session_state.docs:
                 doc_url=os.getenv('SHAREPOINT_FOLDER_URL')+quote(doc[0].metadata['filename'])
                 st.session_state.checkboxes.append([st.checkbox(label='['+doc[0].metadata['filename']+']('+doc_url+')', value=True),doc])
