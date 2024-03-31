@@ -128,6 +128,9 @@ if st.session_state.docs!=None:
             for doc in st.session_state.docs:
                 doc_url=os.getenv('SHAREPOINT_FOLDER_URL')+quote(doc[0].metadata['filename'])
                 st.session_state.checkboxes.append([st.checkbox(label='['+doc[0].metadata['filename']+']('+doc_url+')', value=True),doc])
+        else:
+            for box in st.session_state.checkboxes:
+                box
     with st.container(border=True):
         st.subheader('AI Analysis Options:')
         st.session_state.analyze_validity=st.checkbox(label='Contract validity', value=True,help='AI performs analysis to determine the validity dates of the documents')
