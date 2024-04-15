@@ -131,6 +131,9 @@ if st.session_state.docs!=None:
         st.session_state.analyze_notif_contact=st.checkbox(label='Who to notify', value=True, help='AI performs analysis to determine who to contact if a cybersecurity incident occurs')
         st.session_state.analyze_report_info=st.checkbox(label='Information to report', value=True, help='AI performs analysis to determine what information must be reported if a cybersecurity incident occurs')
         st.session_state.analyze_data_reqs=st.checkbox(label='Data retention requirements', value=True, help='AI performs analysis to determine data retention requirements')
+        st.session_state.analyze_right_to_audit=st.checkbox(label='Right to audit', value=True, help='AI performs analysis to determine the details regarding the right to audit')
+        st.session_state.analyze_indemnification=st.checkbox(label='Indemnification', value=True, help='AI performs analysis to determine the details regarding indemnification in the event of a cybersecurity incident')
+        st.session_state.analyze_privacy_and_compliance=st.checkbox(label='Privacy and Compliance Frameworks', value=True, help='AI performs analysis to determine which privacy and compliance frameworks are applicable')
         st.session_state.analyze=st.button(label='Perform AI analysis', help='AI will perform analysis on the contracts for the vendor for selected options', use_container_width=True, type='primary')
     with st.container(border=True):
         if st.session_state.analyze:
@@ -162,6 +165,15 @@ if st.session_state.docs!=None:
                     threads.append(threading.Thread(target=analyze, args=(question, st.session_state.selected_docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
                 if st.session_state.analyze_data_reqs:
                     question='Data retention requirements:'
+                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.selected_docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
+                if st.session_state.analyze_right_to_audit:
+                    question='Information regarding vendor\'s Right to Audit'
+                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.selected_docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
+                if st.session_state.analyze_indemnification:
+                    question='Information regarding indemnification:'
+                    threads.append(threading.Thread(target=analyze, args=(question, st.session_state.selected_docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
+                if st.session_state.analyze_privacy_and_compliance:
+                    question='Applicable Privacy and Compliance Frameworks:'
                     threads.append(threading.Thread(target=analyze, args=(question, st.session_state.selected_docs, st.session_state.chunk_vector_store, st.session_state.contract_analysis_agent), group=None))
 
                 for thread in threads:
